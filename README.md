@@ -1,5 +1,5 @@
 # keras-voxresnet
-A keras re-implementation of VoxResNet (Hao Chen et.al) for volumetric image classification.
+A keras re-implementation of VoxResNet (Hao Chen et.al) for volumetric image classification. (Non-official)
 
 keras-voxresnet enables __volumetric image classification__ with keras and tensorflow/theano.
 
