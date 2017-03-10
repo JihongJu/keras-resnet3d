@@ -42,12 +42,12 @@ Install dependencies with `pip`:
 ```
 
 
-Validate installation:
+In the docker container, validate installation:
 
 ```
-/workspace# py.test tests
+# py.test tests
 ```
 
-### Usage
+### Applications
 
  - [Train a lung-cancer-detector](https://github.com/JihongJu/lung-cancer-detector/blob/master/train.py)
