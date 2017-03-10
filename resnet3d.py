@@ -24,8 +24,29 @@ def _bn_relu(input):
     """Helper to build a BN -> relu block (copy-paster from
     raghakot/keras-resnet)
     """
-    norm = BatchNormalization(mode=0, axis=CHANNEL_AXIS)(input)
+    norm = BatchNormalization(axis=CHANNEL_AXIS)(input)
     return Activation("relu")(norm)
+
+
+def _conv_bn_relu3D(**conv_params):
+    nb_filter = conv_params["nb_filter"]
+    kernel_dim1 = conv_params["kernel_dim1"]
+    kernel_dim2 = conv_params["kernel_dim2"]
+    kernel_dim3 = conv_params["kernel_dim3"]
+    subsample = conv_params.setdefault("subsample", (1, 1, 1))
+    init = conv_params.setdefault("init", "he_normal")
+    border_mode = conv_params.setdefault("border_mode", "same")
+    W_regularizer = conv_params.setdefault("W_regularizer", l2(1.e-4))
+
+    def f(input):
+        conv = Convolution3D(nb_filter=nb_filter, kernel_dim1=kernel_dim1,
+                             kernel_dim2=kernel_dim2, kernel_dim3=kernel_dim3,
+                             subsample=subsample, init=init,
+                             border_mode=border_mode,
+                             W_regularizer=W_regularizer)(input)
+        return _bn_relu(conv)
+
+    return f
 
 
 def _bn_relu_conv3d(**conv_params):
@@ -176,11 +197,9 @@ class Resnet3DBuilder(object):
         block_fn = _get_block(block_fn)
         input = Input(shape=input_shape)
         # first conv
-        conv1 = Convolution3D(nb_filter=64, kernel_dim1=7, kernel_dim2=7,
-                              kernel_dim3=7, init="he_normal",
-                              border_mode="same",
-                              W_regularizer=l2(1.e-4)
-                              )(input)
+        conv1 = _conv_bn_relu3D(nb_filter=64, kernel_dim1=7, kernel_dim2=7,
+                                kernel_dim3=7, subsample=(2, 2, 2)
+                                )(input)
         pool1 = MaxPooling3D(pool_size=(3, 3, 3), strides=(2, 2, 2),
                              border_mode="same")(conv1)
 
@@ -191,19 +210,26 @@ class Resnet3DBuilder(object):
             block = _residual_block3d(block_fn, nb_filter=nb_filter,
                                       repetitions=r, is_first_layer=(i == 0)
                                       )(block)
+            nb_filter *= 2
+
         # last activation
         block = _bn_relu(block)
         block_norm = BatchNormalization(mode=0, axis=CHANNEL_AXIS)(block)
         block_output = Activation("relu")(block_norm)
 
+
         # average poll and classification
-        pool1 = AveragePooling3D(pool_size=(block._keras_shape[DIM1_AXIS],
+        pool2 = AveragePooling3D(pool_size=(block._keras_shape[DIM1_AXIS],
                                             block._keras_shape[DIM2_AXIS],
                                             block._keras_shape[DIM3_AXIS]),
                                  strides=(1, 1, 1))(block_output)
-        flatten1 = Flatten()(pool1)
-        dense = Dense(output_dim=num_outputs, init="he_normal",
-                      activation="softmax")(flatten1)
+        flatten1 = Flatten()(pool2)
+        if num_outputs > 1:
+            dense = Dense(output_dim=num_outputs, init="he_normal",
+                          activation="softmax")(flatten1)
+        else:
+            dense = Dense(output_dim=num_outputs, init="he_normal",
+                          activation="sigmoid")(flatten1)
 
         model = Model(input=input, output=dense)
         return model
@@ -212,3 +238,8 @@ class Resnet3DBuilder(object):
     def build_resnet_18(input_shape, num_outputs):
         return Resnet3DBuilder.build(input_shape, num_outputs, basic_block,
                                      [2, 2, 2, 2])
+
+    @staticmethod
+    def build_resnet_34(input_shape, num_outputs):
+        return Resnet3DBuilder.build(input_shape, num_outputs, basic_block,
+                                     [3, 4, 6, 3])
