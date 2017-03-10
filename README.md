@@ -49,3 +49,5 @@ Validate installation:
 ```
 
 ### Usage
+
+ - [Train a lung-cancer-detector](https://github.com/JihongJu/lung-cancer-detector/blob/master/train.py)
