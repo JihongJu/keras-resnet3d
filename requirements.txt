@@ -1,4 +1,5 @@
 pytest
+pytest-cov
 numpy
 scipy
 tensorflow-gpu

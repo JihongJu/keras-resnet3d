@@ -59,6 +59,6 @@ script:
   # set up keras backend
   - sed -i -e 's/"backend":[[:space:]]*"[^"]*/"backend":\ "'$KERAS_BACKEND'/g' ~/.keras/keras.json;
   - echo -e "Running tests with the following config:\n$(cat ~/.keras/keras.json)"
-  - KERAS_BACKEND=$KERAS_BACKEND PYTHONPATH=$PWD:$PYTHONPATH py.test tests/test_resnets3d.py --cov=resnet3d;
+  - KERAS_BACKEND=$KERAS_BACKEND PYTHONPATH=$PWD:$PYTHONPATH py.test tests/test_resnet3d.py --cov=resnet3d;
 after_success:
   - bash <(curl -s https://codecov.io/bash) -t ${CODECOV_TOKEN}
