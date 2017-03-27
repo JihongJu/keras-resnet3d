@@ -3,6 +3,9 @@
 
 ### Resnet 3D
 
+[![Build Status](https://travis-ci.org/JihongJu/keras-resnet3d.svg?branch=master)](https://travis-ci.org/JihongJu/keras-resnet3d) [![codecov](https://codecov.io/gh/JihongJu/keras-resnet3d/branch/master/graph/badge.svg)](https://codecov.io/gh/JihongJu/keras-resnet3d)
+
+
 A vanilla 3D extention to [raghakot/keras-resnet](https://github.com/raghakot/keras-resnet)
 
 
@@ -32,21 +35,17 @@ $ git clone https://github.com/JihongJu/keras-resnet3d.git
 Start bash in a Keras docker image:
 
 ```
-$ nvidia-docker run -it --rm -v `pwd`/keras-resnet3d/:/workspace jihong/nvidia-keras bash
+$ nvidia-docker run -it --rm -v `pwd`/keras-resnet3d/:/workspace jihong/keras-gpu bash
 ```
 
-Install dependencies with `pip`:
+Install dependencies with `virtualenv`:
 
 ```
+# cd workspace
+# virtualenv --system-site-packages
 # pip install -r requirements.txt
 ```
 
-
-In the docker container, validate installation:
-
-```
-# py.test tests
-```
 
 ### Applications
 
