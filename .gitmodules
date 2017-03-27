@@ -1,3 +1,0 @@
-[submodule "resnet"]
-	path = resnet
-	url = https://github.com/raghakot/keras-resnet
