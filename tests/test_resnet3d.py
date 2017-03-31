@@ -37,10 +37,10 @@ def test_resnet3d_34(resnet3d_test):
 def test_resnet3d_50(resnet3d_test):
     """Test 50."""
     K.set_image_data_format('channels_last')
-    model = Resnet3DBuilder.build_resnet_50((224, 224, 224, 1), 1)
+    model = Resnet3DBuilder.build_resnet_50((224, 224, 224, 1), 1, 1e-2)
     resnet3d_test(model)
     K.set_image_data_format('channels_first')
-    model = Resnet3DBuilder.build_resnet_50((1, 512, 512, 256), 1)
+    model = Resnet3DBuilder.build_resnet_50((1, 512, 512, 256), 1, 1e-2)
     resnet3d_test(model)
 
 
