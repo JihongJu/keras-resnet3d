@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """A vanilla 3D resnet implementation.
 
 Based on Raghavendra Kotikalapudi's 2D implementation
