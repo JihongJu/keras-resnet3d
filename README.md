@@ -1,52 +1,54 @@
 # keras-resnet3d
 
+[![Build Status](https://travis-ci.org/JihongJu/keras-resnet3d.svg?branch=master)](https://travis-ci.org/JihongJu/keras-resnet3d) [![codecov](https://codecov.io/gh/JihongJu/keras-resnet3d/branch/master/graph/badge.svg)](https://codecov.io/gh/JihongJu/keras-resnet3d)
+
 
 ### Resnet 3D
-
-[![Build Status](https://travis-ci.org/JihongJu/keras-resnet3d.svg?branch=master)](https://travis-ci.org/JihongJu/keras-resnet3d) [![codecov](https://codecov.io/gh/JihongJu/keras-resnet3d/branch/master/graph/badge.svg)](https://codecov.io/gh/JihongJu/keras-resnet3d)
 
 
 A vanilla 3D extention to [raghakot/keras-resnet](https://github.com/raghakot/keras-resnet)
 
 
 
-### VoxResNet
-A keras re-implementation of VoxResNet (Hao Chen et.al) for volumetric image classification. (Non-official)
+### VoxResNet (TODO)
+A keras re-implementation of VoxResNet (Hao Chen et.al) for volumetric image segmention. (Non-official)
 
 keras-voxresnet enables __volumetric image classification__ with keras and tensorflow/theano.
-
-Note that the original VoxResNet architecture was designed for volumetric image segmentation which is not yet implemented here.
-
-The implementation is again built upon the keras implementation of resnet  [keras-resnet](https://github.com/raghakot/keras-resnet).
 
 
 ### Installation
 
-This implementation is based on Keras together with the GPU version of Tensorflow/Theano. It is highly recommended to run the training processes with a GPU-enabled Docker image.
+#### Dependencies
 
-The following installation procedures assumes Nvidia Driver, [docker](https://docs.docker.com/engine/installation/linux/ubuntu/) and [nvidia-docker](https://devblogs.nvidia.com/parallelforall/nvidia-docker-gpu-server-application-deployment-made-easy/) are properly installed on a [Ubuntu machine](https://www.ubuntu.com/download/desktop/install-ubuntu-desktop).
+[keras](https://keras.io/#installation), [tensorflow](https://www.tensorflow.org/install/)/[theano](http://deeplearning.net/software/theano/install.html) and their corresponding dependencies.
 
-First clone the repository:
 
+#### Install with `pip`
+
+```bash
+$ pip install git+https://github.com/JihongJu/keras-resnet3d.git
 ```
+
+
+#### Build from source
+
+```bash
 $ git clone https://github.com/JihongJu/keras-resnet3d.git
+$ cd keras-resnet3d
+$ python setup.py build
 ```
 
-Start bash in a Keras docker image:
+### Usage
 
-```
-$ nvidia-docker run -it --rm -v `pwd`/keras-resnet3d/:/workspace jihong/keras-gpu bash
-```
-
-Install dependencies with `virtualenv`:
-
-```
-# cd workspace
-# virtualenv --system-site-packages
-# pip install -r requirements.txt
+```python
+from resnet3d import Resnet3DBuilder
+model = Resnet3DBuilder.build_resnet_50((96, 96, 96, 1), 20)
+model.compile(optimizer='adam',
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
+model.fit(X_train, y_train, batch_size=32)
 ```
 
+More details see example:
 
-### Applications
-
- - [Train a lung-cancer-detector](https://github.com/JihongJu/lung-cancer-detector/blob/master/train.py)
+ - [A  lung-cancer-detector](https://github.com/JihongJu/lung-cancer-detector/tree/master/resnet3d_50)
