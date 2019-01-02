@@ -10,6 +10,7 @@ from __future__ import (
     unicode_literals
 )
 import six
+from math import ceil
 from keras.models import Model
 from keras.layers import (
     Input,
@@ -76,12 +77,12 @@ def _bn_relu_conv3d(**conv_params):
 
 def _shortcut3d(input, residual):
     """3D shortcut to match input and residual and merges them with "sum"."""
-    stride_dim1 = input._keras_shape[DIM1_AXIS] \
-        // residual._keras_shape[DIM1_AXIS]
-    stride_dim2 = input._keras_shape[DIM2_AXIS] \
-        // residual._keras_shape[DIM2_AXIS]
-    stride_dim3 = input._keras_shape[DIM3_AXIS] \
-        // residual._keras_shape[DIM3_AXIS]
+    stride_dim1 = ceil(input._keras_shape[DIM1_AXIS] \
+        / residual._keras_shape[DIM1_AXIS])
+    stride_dim2 = ceil(input._keras_shape[DIM2_AXIS] \
+        / residual._keras_shape[DIM2_AXIS])
+    stride_dim3 = ceil(input._keras_shape[DIM3_AXIS] \
+        / residual._keras_shape[DIM3_AXIS])
     equal_channels = residual._keras_shape[CHANNEL_AXIS] \
         == input._keras_shape[CHANNEL_AXIS]
 
