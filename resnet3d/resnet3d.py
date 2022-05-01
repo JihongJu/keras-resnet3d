@@ -18,13 +18,13 @@ from keras.layers import (
     Dense,
     Flatten
 )
-from keras.layers.convolutional import (
+from keras.layers import (
     Conv3D,
     AveragePooling3D,
     MaxPooling3D
 )
-from keras.layers.merge import add
-from keras.layers.normalization import BatchNormalization
+from keras.layers import add
+from keras.layers import BatchNormalization
 from keras.regularizers import l2
 from keras import backend as K
 
@@ -77,20 +77,20 @@ def _bn_relu_conv3d(**conv_params):
 
 def _shortcut3d(input, residual):
     """3D shortcut to match input and residual and merges them with "sum"."""
-    stride_dim1 = ceil(input._keras_shape[DIM1_AXIS] \
-        / residual._keras_shape[DIM1_AXIS])
-    stride_dim2 = ceil(input._keras_shape[DIM2_AXIS] \
-        / residual._keras_shape[DIM2_AXIS])
-    stride_dim3 = ceil(input._keras_shape[DIM3_AXIS] \
-        / residual._keras_shape[DIM3_AXIS])
-    equal_channels = residual._keras_shape[CHANNEL_AXIS] \
-        == input._keras_shape[CHANNEL_AXIS]
+    stride_dim1 = ceil(input.shape[DIM1_AXIS] \
+        / residual.shape[DIM1_AXIS])
+    stride_dim2 = ceil(input.shape[DIM2_AXIS] \
+        / residual.shape[DIM2_AXIS])
+    stride_dim3 = ceil(input.shape[DIM3_AXIS] \
+        / residual.shape[DIM3_AXIS])
+    equal_channels = residual.shape[CHANNEL_AXIS] \
+        == input.shape[CHANNEL_AXIS]
 
     shortcut = input
     if stride_dim1 > 1 or stride_dim2 > 1 or stride_dim3 > 1 \
             or not equal_channels:
         shortcut = Conv3D(
-            filters=residual._keras_shape[CHANNEL_AXIS],
+            filters=residual.shape[CHANNEL_AXIS],
             kernel_size=(1, 1, 1),
             strides=(stride_dim1, stride_dim2, stride_dim3),
             kernel_initializer="he_normal", padding="valid",
@@ -247,9 +247,9 @@ class Resnet3DBuilder(object):
         block_output = _bn_relu(block)
 
         # average poll and classification
-        pool2 = AveragePooling3D(pool_size=(block._keras_shape[DIM1_AXIS],
-                                            block._keras_shape[DIM2_AXIS],
-                                            block._keras_shape[DIM3_AXIS]),
+        pool2 = AveragePooling3D(pool_size=(block.shape[DIM1_AXIS],
+                                            block.shape[DIM2_AXIS],
+                                            block.shape[DIM3_AXIS]),
                                  strides=(1, 1, 1))(block_output)
         flatten1 = Flatten()(pool2)
         if num_outputs > 1:
